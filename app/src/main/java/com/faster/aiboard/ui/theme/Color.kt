@@ -12,7 +12,6 @@ val BlueDark = Color(0xFF003258)
 val BlueDarkContainer = Color(0xFF00497D)
 val DarkSurface = Color(0xFF1A1C1E)
 val DarkOnSurface = Color(0xFFE2E2E6)
-val DarkSurfaceVariant = Color(0xFF2C2E30)
 
 val GreySecondary = Color(0xFF535F70)
 val GreySecondaryDark = Color(0xFFBAC8DC)
