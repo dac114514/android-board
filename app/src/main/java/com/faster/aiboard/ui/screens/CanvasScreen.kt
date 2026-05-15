@@ -1,5 +1,7 @@
 package com.faster.aiboard.ui.screens
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -70,7 +72,7 @@ fun CanvasScreen(
         )
 
         // Top-left back button
-        FilledTonalButton(
+        FilledIconButton(
             onClick = {
                 scope.launch { viewModel.save(); onBack() }
             },
@@ -78,7 +80,7 @@ fun CanvasScreen(
                 .align(Alignment.TopStart)
                 .padding(16.dp)
         ) {
-            Text("← 返回")
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
         }
 
         // Right-side floating toolbar
