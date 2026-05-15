@@ -45,7 +45,7 @@ class AISessionViewModel(
     fun onLassoEnd() {
         if (aiState.lassoPoints.size >= 3) {
             val center = aiState.lassoPoints.fold(Offset.Zero) { acc, p -> acc + p } /
-                    aiState.lassoPoints.size.coerceAtLeast(1)
+                    aiState.lassoPoints.size.coerceAtLeast(1).toFloat()
             aiState = aiState.copy(
                 isSelecting = false,
                 showDialog = true,

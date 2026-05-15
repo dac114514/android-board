@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import com.faster.aiboard.data.model.*
+import com.faster.aiboard.data.model.Stroke as ModelStroke
 import com.faster.aiboard.data.repository.FileRepository
 import java.util.UUID
 
@@ -83,7 +84,7 @@ class CanvasViewModel {
     }
 
     fun onEraserMove(offset: Offset) {
-        val hitId = state.elements.filterIsInstance<Stroke>().findLast { stroke ->
+        val hitId = state.elements.filterIsInstance<ModelStroke>().findLast { stroke ->
             val pts = stroke.points.map { Offset(it.x, it.y) }
             pts.any { (it - offset).getDistance() < state.eraserWidth }
         }?.id
@@ -97,7 +98,7 @@ class CanvasViewModel {
     fun onSelectTap(offset: Offset) {
         val hitId = state.elements.lastOrNull { element ->
             when (element) {
-                is Stroke -> {
+                is ModelStroke -> {
                     val pts = element.points.map { Offset(it.x, it.y) }
                     pts.any { (it - offset).getDistance() < 20f }
                 }
