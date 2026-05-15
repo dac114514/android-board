@@ -18,9 +18,11 @@ fun QuickQuestionsDialog(
     onSave: (List<String>) -> Unit,
     onDismiss: () -> Unit
 ) {
-    var items by remember {
-        mutableStateOf(currentQuestions.toMutableList().ifEmpty { mutableListOf("回答问题", "解释", "翻译") })
+    val defaultItems = remember(currentQuestions) {
+        if (currentQuestions.isNotEmpty()) currentQuestions.toMutableList()
+        else mutableListOf("回答问题", "解释", "翻译")
     }
+    var items by remember { mutableStateOf(defaultItems) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
