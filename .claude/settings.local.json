@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(C:\\\\Users\\\\Administrator\\\\.claude\\\\plugins\\\\cache\\\\claude-plugins-official\\\\superpowers\\\\5.1.0\\\\skills\\\\brainstorming\\\\scripts\\\\start-server.sh *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(mkdir -p app/src/main/java/com/faster/aiboard/ui/theme)",
+      "Bash(git mv *)",
+      "Bash(git rm *)",
+      "Bash(rmdir app/src/main/java/com/java)",
+      "Bash(mv app/src/main/java/com/java/myapplication/MainActivity.kt app/src/main/java/com/faster/aiboard/MainActivity.kt)",
+      "Bash(mv app/src/main/java/com/java/myapplication/ui/theme/Color.kt app/src/main/java/com/faster/aiboard/ui/theme/Color.kt)",
+      "Bash(mv app/src/main/java/com/java/myapplication/ui/theme/Theme.kt app/src/main/java/com/faster/aiboard/ui/theme/Theme.kt)",
+      "Bash(mv app/src/main/java/com/java/myapplication/ui/theme/Type.kt app/src/main/java/com/faster/aiboard/ui/theme/Type.kt)",
+      "Bash(rmdir app/src/main/java/com/java/myapplication/ui/theme app/src/main/java/com/java/myapplication/ui app/src/main/java/com/java/myapplication app/src/main/java/com/java)",
+      "Bash(./gradlew :app:assembleDebug)",
+      "Bash(git ls-tree *)",
+      "Bash(ls -la settings.gradle* build.gradle* gradle.properties)",
+      "Bash(cat settings.gradle.kts)",
+      "Bash(cat settings.gradle)",
+      "Bash(find . -name \"libs.versions.toml\" -o -name \"versions.toml\")",
+      "Bash(cat gradle/libs.versions.toml)",
+      "mcp__plugin_github_github__get_me",
+      "mcp__github__create_repository",
+      "Bash(git remote *)",
+      "Bash(git push *)",
+      "Bash(gh repo *)",
+      "Bash(gh run *)",
+      "Bash(gh workflow *)",
+      "Bash(gh api *)",
+      "Bash(curl -s --connect-timeout 10 https://github.com)",
+      "Bash(git init *)",
+      "mcp__plugin_github_github__push_files",
+      "Bash(python3 -c ' *)"
+    ]
+  }
+}
