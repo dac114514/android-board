@@ -49,7 +49,7 @@ fun QuickQuestionsDialog(
                         }
                     }
                 }
-                TextButton(onClick = { items = items + "" }) {
+                TextButton(onClick = { items = items.toMutableList().apply { add("") } }) {
                     Icon(Icons.Default.Add, contentDescription = null)
                     Spacer(Modifier.width(4.dp))
                     Text("添加")
