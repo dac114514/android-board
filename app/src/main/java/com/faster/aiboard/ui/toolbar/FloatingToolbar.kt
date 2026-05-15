@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.faster.aiboard.ui.canvas.Tool
 
 @Composable
@@ -48,9 +47,12 @@ fun FloatingToolbar(
                     .clickable { onToolSelected(toolItem.tool) },
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = toolItem.icon,
-                    fontSize = 18.sp
+                Icon(
+                    imageVector = toolItem.icon,
+                    contentDescription = toolItem.label,
+                    tint = if (isActive) MaterialTheme.colorScheme.primary
+                           else MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(20.dp)
                 )
             }
         }
@@ -68,14 +70,20 @@ fun ColorStrip(
         0xFF2ECC71, 0xFF3498DB, 0xFF9B59B6, 0xFFFFFFFF
     )
     Row(
-        modifier = modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
+        modifier = modifier
+            .clip(RoundedCornerShape(20.dp))
+            .background(
+                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.9f),
+                RoundedCornerShape(20.dp)
+            )
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         colors.forEach { color ->
             val isSelected = selectedColor == color
             Box(
                 modifier = Modifier
-                    .size(24.dp)
+                    .size(if (isSelected) 28.dp else 24.dp)
                     .clip(CircleShape)
                     .background(
                         if (color == 0xFFFFFFFF) Color.White else Color(color)
