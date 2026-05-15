@@ -6,4 +6,8 @@ sealed class Screen(val route: String) {
         fun createRoute(boardId: String) = "canvas/$boardId"
     }
     data object Settings : Screen("settings")
+
+    companion object {
+        val bottomNavRoutes = listOf(BoardList.route, Settings.route)
+    }
 }

@@ -1,6 +1,7 @@
 package com.faster.aiboard.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -11,8 +12,15 @@ import com.faster.aiboard.ui.screens.CanvasScreen
 import com.faster.aiboard.ui.screens.SettingsScreen
 
 @Composable
-fun AppNavGraph(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = Screen.BoardList.route) {
+fun AppNavGraph(
+    navController: NavHostController,
+    modifier: Modifier = Modifier
+) {
+    NavHost(
+        navController = navController,
+        startDestination = Screen.BoardList.route,
+        modifier = modifier
+    ) {
         composable(Screen.BoardList.route) {
             BoardListScreen(
                 onBoardClick = { boardId ->
