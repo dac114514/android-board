@@ -19,8 +19,7 @@ fun AIPopup(
     var text by remember { mutableStateOf("") }
 
     Card(
-        modifier = modifier
-            .width(260.dp),
+        modifier = modifier.width(260.dp),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -34,7 +33,6 @@ fun AIPopup(
                 placeholder = { Text("提问...") },
                 modifier = Modifier.fillMaxWidth(),
                 maxLines = 3,
-                singleLine = false
             )
             Spacer(Modifier.height(8.dp))
 
