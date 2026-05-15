@@ -18,13 +18,21 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.faster.aiboard.settings.SettingsDataStore
+import com.faster.aiboard.ui.settings.AboutDialog
 import com.faster.aiboard.ui.settings.ApiKeyDialog
+import com.faster.aiboard.ui.settings.DefaultTemplateDialog
+import com.faster.aiboard.ui.settings.QuickQuestionsDialog
+import com.faster.aiboard.ui.settings.ToolbarCustomizeDialog
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(onBack: () -> Unit) {
     var showApiDialog by remember { mutableStateOf(false) }
+    var showQuickQuestions by remember { mutableStateOf(false) }
+    var showToolbarCustomize by remember { mutableStateOf(false) }
+    var showDefaultTemplate by remember { mutableStateOf(false) }
+    var showAbout by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     val dataStore = remember { SettingsDataStore(context) }
@@ -63,21 +71,21 @@ fun SettingsScreen(onBack: () -> Unit) {
                         icon = Icons.Default.QuestionAnswer,
                         title = "快捷问答管理",
                         subtitle = "预设提问词条",
-                        onClick = { /* TODO */ }
+                        onClick = { showQuickQuestions = true }
                     )
                     HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
                     SettingsCardItem(
                         icon = Icons.Default.Tune,
                         title = "工具栏定制",
                         subtitle = "排列列数、工具显隐",
-                        onClick = { /* TODO */ }
+                        onClick = { showToolbarCustomize = true }
                     )
                     HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
                     SettingsCardItem(
                         icon = Icons.Default.Description,
                         title = "默认模板",
                         subtitle = "新建白板默认模板",
-                        onClick = { /* TODO */ }
+                        onClick = { showDefaultTemplate = true }
                     )
                 }
             }
@@ -90,7 +98,7 @@ fun SettingsScreen(onBack: () -> Unit) {
                     icon = Icons.Default.Info,
                     title = "关于",
                     subtitle = "版本号、许可",
-                    onClick = { /* TODO */ }
+                    onClick = { showAbout = true }
                 )
             }
 
@@ -106,6 +114,44 @@ fun SettingsScreen(onBack: () -> Unit) {
                 showApiDialog = false
             },
             onDismiss = { showApiDialog = false }
+        )
+    }
+
+    if (showQuickQuestions) {
+        QuickQuestionsDialog(
+            currentQuestions = emptyList(),
+            onSave = { showQuickQuestions = false },
+            onDismiss = { showQuickQuestions = false }
+        )
+    }
+
+    if (showToolbarCustomize) {
+        ToolbarCustomizeDialog(
+            currentColumns = 1,
+            currentTools = mapOf(
+                "选择" to true,
+                "画笔" to true,
+                "荧光笔" to true,
+                "橡皮" to true,
+                "AI套索" to true,
+                "插入" to true
+            ),
+            onSave = { _, _ -> showToolbarCustomize = false },
+            onDismiss = { showToolbarCustomize = false }
+        )
+    }
+
+    if (showDefaultTemplate) {
+        DefaultTemplateDialog(
+            currentTemplate = "blank",
+            onSave = { showDefaultTemplate = false },
+            onDismiss = { showDefaultTemplate = false }
+        )
+    }
+
+    if (showAbout) {
+        AboutDialog(
+            onDismiss = { showAbout = false }
         )
     }
 }

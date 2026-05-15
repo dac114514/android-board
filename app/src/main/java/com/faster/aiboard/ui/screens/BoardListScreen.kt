@@ -13,36 +13,38 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.faster.aiboard.data.model.BoardListItem
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BoardListScreen(
-    onBoardClick: (String) -> Unit,
-    onSettingsClick: () -> Unit
+    viewModel: BoardViewModel,
+    onBoardClick: (String) -> Unit
 ) {
-    val boards = remember { emptyList<BoardItem>() }
+    val scope = rememberCoroutineScope()
+    val state = viewModel.state
+
+    LaunchedEffect(Unit) {
+        viewModel.loadBoards()
+    }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("智绘白板") },
-                actions = {
-                    IconButton(onClick = onSettingsClick) {
-                        Icon(Icons.Default.Dashboard, contentDescription = "设置")
-                    }
-                }
+                title = { Text("智绘白板") }
             )
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* TODO: create board */ },
+                onClick = { viewModel.showCreateDialog() },
                 containerColor = MaterialTheme.colorScheme.primaryContainer
             ) {
                 Icon(Icons.Default.Add, contentDescription = "新建白板")
             }
         }
     ) { padding ->
-        if (boards.isEmpty()) {
+        if (state.boards.isEmpty()) {
             Box(
                 modifier = Modifier.fillMaxSize().padding(padding),
                 contentAlignment = Alignment.Center
@@ -76,7 +78,7 @@ fun BoardListScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(boards, key = { it.id }) { board ->
+                items(state.boards, key = { it.id }) { board ->
                     ElevatedCard(
                         onClick = { onBoardClick(board.id) },
                         modifier = Modifier.fillMaxWidth()
@@ -102,9 +104,22 @@ fun BoardListScreen(
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
-                            board.lastModified?.let {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
                                 Text(
-                                    text = it,
+                                    text = when (board.template) {
+                                        "lined" -> "横线"
+                                        "grid" -> "方格"
+                                        "music" -> "五线谱"
+                                        else -> "空白"
+                                    },
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                                Text(
+                                    text = board.updatedAt.take(10),
                                     style = MaterialTheme.typography.labelSmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -115,10 +130,51 @@ fun BoardListScreen(
             }
         }
     }
-}
 
-private data class BoardItem(
-    val id: String,
-    val name: String,
-    val lastModified: String? = null
-)
+    if (state.showCreateDialog) {
+        AlertDialog(
+            onDismissRequest = { viewModel.hideCreateDialog() },
+            title = { Text("新建白板") },
+            text = {
+                Column {
+                    OutlinedTextField(
+                        value = state.newBoardName,
+                        onValueChange = { viewModel.setBoardName(it) },
+                        label = { Text("白板名称") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    Text("选择模板", style = MaterialTheme.typography.labelLarge)
+                    Spacer(Modifier.height(8.dp))
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        val templates = listOf(
+                            "blank" to "空白",
+                            "lined" to "横线",
+                            "grid" to "方格",
+                            "music" to "五线谱"
+                        )
+                        templates.forEach { (key, label) ->
+                            FilterChip(
+                                selected = state.selectedTemplate == key,
+                                onClick = { viewModel.setTemplate(key) },
+                                label = { Text(label) }
+                            )
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                Button(onClick = {
+                    scope.launch {
+                        val id = viewModel.createBoard()
+                        if (id != null) onBoardClick(id)
+                    }
+                }) { Text("创建") }
+            },
+            dismissButton = {
+                TextButton(onClick = { viewModel.hideCreateDialog() }) { Text("取消") }
+            }
+        )
+    }
+}

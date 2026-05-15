@@ -1,5 +1,6 @@
 package com.faster.aiboard.ui.screens
 
+import android.graphics.Bitmap
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.foundation.layout.*
@@ -9,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import com.faster.aiboard.ai.AIImageAnalyzer
 import com.faster.aiboard.ai.AIService
 import com.faster.aiboard.data.repository.FileRepository
 import com.faster.aiboard.settings.SettingsDataStore
@@ -36,8 +38,44 @@ fun CanvasScreen(
             onAnalyze = { question ->
                 if (apiKey.isBlank()) return@AISessionViewModel "请先在设置中配置 API Key"
                 val service = AIService(apiKey)
-                // TODO: capture lasso region as Bitmap and pass to service
-                service.analyzeImage("", question)
+                val pts = viewModel.state.aiLassoPoints
+                if (pts.size < 3) return@AISessionViewModel "套索区域过小"
+                try {
+                    val bounds = androidx.compose.ui.geometry.Rect(
+                        pts.minOf { it.x }, pts.minOf { it.y },
+                        pts.maxOf { it.x }, pts.maxOf { it.y }
+                    )
+                    val bw = (bounds.width.coerceAtLeast(100f)).toInt()
+                    val bh = (bounds.height.coerceAtLeast(100f)).toInt()
+                    val bitmap = Bitmap.createBitmap(bw, bh, Bitmap.Config.ARGB_8888)
+                    val canvas = android.graphics.Canvas(bitmap)
+                    canvas.drawColor(android.graphics.Color.WHITE)
+                    for (element in viewModel.state.elements) {
+                        if (element is com.faster.aiboard.data.model.Stroke) {
+                            val path = android.graphics.Path().apply {
+                                val pts2 = element.points
+                                if (pts2.isNotEmpty()) {
+                                    moveTo(pts2.first().x - bounds.left, pts2.first().y - bounds.top)
+                                    for (i in 1 until pts2.size) {
+                                        lineTo(pts2[i].x - bounds.left, pts2[i].y - bounds.top)
+                                    }
+                                }
+                            }
+                            val paint = android.graphics.Paint().apply {
+                                color = android.graphics.Color.BLACK
+                                strokeWidth = element.strokeWidth.coerceAtLeast(2f)
+                                style = android.graphics.Paint.Style.STROKE
+                                strokeCap = android.graphics.Paint.Cap.ROUND
+                                strokeJoin = android.graphics.Paint.Join.ROUND
+                            }
+                            canvas.drawPath(path, paint)
+                        }
+                    }
+                    val analyzer = AIImageAnalyzer(service)
+                    analyzer.analyzeArea(bitmap, question)
+                } catch (e: Exception) {
+                    "分析失败: ${e.message}"
+                }
             }
         )
     }
