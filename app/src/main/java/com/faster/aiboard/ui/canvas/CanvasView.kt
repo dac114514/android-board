@@ -13,7 +13,6 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import com.faster.aiboard.data.model.*
-import com.faster.aiboard.data.model.Stroke as ModelStroke
 
 fun Path.applyPoints(points: List<Offset>) {
     if (points.isEmpty()) return
@@ -132,7 +131,7 @@ private fun DrawScope.drawTemplateGrid(state: CanvasState) {
 
 private fun DrawScope.drawElement(element: CanvasElement, state: CanvasState) {
     when (element) {
-        is ModelStroke -> {
+        is com.faster.aiboard.data.model.Stroke -> {
             if (element.points.size < 2) return
             val path = Path().apply {
                 val pts = element.points.map { Offset(it.x, it.y) }
